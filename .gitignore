@@ -1,0 +1,32 @@
+# Python
+__pycache__/
+*.py[cod]
+.ipynb_checkpoints/
+.venv/
+venv/
+.env
+
+# IDE / SO
+.vscode/*
+!.vscode/settings.json
+.DS_Store
+
+# Logs (mantém só a pasta)
+logs/*
+!logs/.gitkeep
+
+# Intermediários regeneráveis
+data/interim/*
+!data/interim/.gitkeep
+
+# Artefatos de treino
+models/
+mlruns/
+optuna*.db
+*.pt
+*.pth
+*.joblib
+
+# data/raw e data/processed são versionados de propósito:
+#   - raw: 880 kB, garante que todo o grupo parte do mesmo arquivo
+#   - processed: partições pequenas e determinísticas; todos usam exatamente os mesmos folds

@@ -1,0 +1,3 @@
+# Remove as saídas dos notebooks no commit (rode uma vez: nbstripout --install)
+*.ipynb filter=nbstripout
+*.ipynb diff=ipynb

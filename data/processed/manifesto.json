@@ -1,0 +1,74 @@
+{
+  "seed": 42,
+  "k_folds": 3,
+  "rotacao": {
+    "1": {
+      "treino": 1,
+      "validacao": 2,
+      "teste": 3
+    },
+    "2": {
+      "treino": 2,
+      "validacao": 3,
+      "teste": 1
+    },
+    "3": {
+      "treino": 3,
+      "validacao": 1,
+      "teste": 2
+    }
+  },
+  "oversampling": {
+    "treino": true,
+    "validacao": true,
+    "teste": false
+  },
+  "alvo": {
+    "coluna": "Churn",
+    "positivo(1)": "Yes"
+  },
+  "csv_original_md5": "7f8ecf250fca7ebbceb753c07de41412",
+  "formas_X": {
+    "treino_fold1": [
+      3450,
+      19
+    ],
+    "validacao_fold1": [
+      3450,
+      19
+    ],
+    "teste_fold1": [
+      2347,
+      19
+    ],
+    "treino_fold2": [
+      3450,
+      19
+    ],
+    "validacao_fold2": [
+      3448,
+      19
+    ],
+    "teste_fold2": [
+      2348,
+      19
+    ],
+    "treino_fold3": [
+      3448,
+      19
+    ],
+    "validacao_fold3": [
+      3450,
+      19
+    ],
+    "teste_fold3": [
+      2348,
+      19
+    ]
+  },
+  "versoes": {
+    "python": "3.13.16",
+    "pandas": "3.0.5",
+    "numpy": "2.5.3"
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "onehot": false,
+  "scale": false,
+  "bins": false,
+  "TotalCharges_mediana_contingencia": 1363.25,
+  "regra_TotalCharges": "tenure == 0 -> 0.0",
+  "MonthlyCharges_quartis": [
+    40.05,
+    70.4,
+    90.0125
+  ]
+}

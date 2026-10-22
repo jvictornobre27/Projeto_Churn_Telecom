@@ -1,0 +1,103 @@
+{
+  "onehot": true,
+  "scale": true,
+  "bins": false,
+  "TotalCharges_mediana_contingencia": 1444.9250000000002,
+  "regra_TotalCharges": "tenure == 0 -> 0.0",
+  "MonthlyCharges_quartis": [
+    36.4,
+    70.9,
+    90.4
+  ],
+  "minmax": {
+    "tenure": {
+      "min": 0.0,
+      "max": 72.0
+    },
+    "MonthlyCharges": {
+      "min": 18.25,
+      "max": 118.6
+    },
+    "TotalCharges": {
+      "min": 0.0,
+      "max": 8684.8
+    }
+  },
+  "categorias": {
+    "gender": [
+      "Female",
+      "Male"
+    ],
+    "SeniorCitizen": [
+      "0",
+      "1"
+    ],
+    "Partner": [
+      "No",
+      "Yes"
+    ],
+    "Dependents": [
+      "No",
+      "Yes"
+    ],
+    "PhoneService": [
+      "No",
+      "Yes"
+    ],
+    "MultipleLines": [
+      "No",
+      "No phone service",
+      "Yes"
+    ],
+    "InternetService": [
+      "DSL",
+      "Fiber optic",
+      "No"
+    ],
+    "OnlineSecurity": [
+      "No",
+      "No internet service",
+      "Yes"
+    ],
+    "OnlineBackup": [
+      "No",
+      "No internet service",
+      "Yes"
+    ],
+    "DeviceProtection": [
+      "No",
+      "No internet service",
+      "Yes"
+    ],
+    "TechSupport": [
+      "No",
+      "No internet service",
+      "Yes"
+    ],
+    "StreamingTV": [
+      "No",
+      "No internet service",
+      "Yes"
+    ],
+    "StreamingMovies": [
+      "No",
+      "No internet service",
+      "Yes"
+    ],
+    "Contract": [
+      "Month-to-month",
+      "One year",
+      "Two year"
+    ],
+    "PaperlessBilling": [
+      "No",
+      "Yes"
+    ],
+    "PaymentMethod": [
+      "Bank transfer (automatic)",
+      "Credit card (automatic)",
+      "Electronic check",
+      "Mailed check"
+    ]
+  }
+}
