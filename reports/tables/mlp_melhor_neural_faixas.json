@@ -1,0 +1,17 @@
+{
+  "neuronios": [
+    17,
+    6
+  ],
+  "ativacao": "tanh",
+  "dropout": 0.3,
+  "perda": "mse",
+  "otimizador": "rmsprop",
+  "lr": 0.0030456466998602626,
+  "weight_decay": 2.5960365629723283e-06,
+  "momentum": 0.0,
+  "batch_size": 32,
+  "max_epocas": 10000,
+  "paciencia": 20,
+  "min_delta": 0.0001
+}
