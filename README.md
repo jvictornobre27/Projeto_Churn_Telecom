@@ -6,7 +6,7 @@
 * Leandro Luiz de Lima Freitas 
 * Tomás Nascimento Santos
 
-Previsão de churn com redes neurais e modelos de comparação. Etapas feitas: **EDA, particionamento em 3 folds e pré-processamento**.
+Previsão de churn com redes neurais e modelos de comparação. Etapas feitas: **EDA, particionamento em 3 folds, pré-processamento, métricas compartilhadas e MLP (PyTorch)**.
 
 ## Estrutura
 
@@ -22,12 +22,15 @@ Projeto_Churn_Telecom/
 │   ├── 01_analise_inicial_dados.ipynb    # visão estrutural do dataset
 │   ├── 02_particionamento_dados.ipynb    # 3 folds, oversampling, verificações, salvar
 │   ├── 03_eda_treino_fold1.ipynb         # EDA só no treino do Fold 1
-│   └── 04_preprocessamento.ipynb         # imputação, faixas, one-hot, Min-Max (ajustados só no treino)
+│   ├── 04_preprocessamento.ipynb         # imputação, faixas, one-hot, Min-Max (ajustados só no treino)
+│   └── 05_mlp.ipynb                      # MLP: escada de evolução E0→E4 (Optuna, 3 folds × 3 sementes)
 ├── src/
 │   ├── config.py       # caminhos, semente, colunas, rotação dos folds
 │   ├── data_loader.py  # leitura do CSV original
 │   ├── split_data.py   # particionamento, verificações, salvar/carregar
-│   └── preprocess.py   # pré-processamento por fold sem vazamento, verificações
+│   ├── preprocess.py   # pré-processamento por fold sem vazamento, verificações
+│   ├── metrics.py      # KS, AUROC, MSE... e formato ÚNICO de resultados (todos os modelos)
+│   └── mlp.py          # motor do MLP: rede, treino, parada antecipada, Optuna
 ├── reports/{figures,tables}/
 └── logs/
 ```
@@ -75,3 +78,29 @@ X_tr, y_tr = load_partition(1, "treino")
 X_va, y_va = load_partition(1, "validacao")
 X_te, y_te = load_partition(1, "teste")
 ```
+
+## Plano
+
+Hiperparâmetros só com o Fold 1 → melhores modelos retreinados nos Folds 2 e 3 → média e desvio padrão das métricas (KS principal, AUROC, F1, recall, precision, MSE).
+
+## Registro de resultados e evolução para os modelos
+
+Todo modelo salva em `reports/tables/resultados_<modelo>.csv` pelo mesmo formato (`src/metrics.py`). A chave de cada linha é
+`modelo, etapa, variante, fold, semente, conjunto`:
+- **`etapa`**: degrau da escada para registrar o desempenho de forma evolutiva, ex.: `E0_baseline`, `E1_faixas`, ...
+  O primeiro modelo usa **todas as variáveis**; cada mudança vira uma etapa nova. O prefixo `E<n>` define a ordem nos gráficos.
+- **`semente`**: semente do treino. `summarize_folds` faz a média das sementes dentro de cada fold e só então calcula média ± desvio entre folds.
+- Escolhas (hiperparâmetros, variante, etapa) usam **só o KS de validação**; o teste é registrado, não usado para escolher.
+
+```python
+from src.metrics import evaluate_sets, save_results, load_results, summarize_folds, plot_evolution
+res = evaluate_sets("xgboost", "arvore", fold=1, scores={...}, etapa="E0_baseline", semente=42)
+save_results(res)
+plot_evolution(load_results(), "xgboost", metric="ks", fold=1)
+```
+
+## MLP (`notebooks/05_mlp.ipynb`)
+
+Escada: E0 (rede pequena, todas as variáveis) → E1 (+faixas) → E2/E3 (busca Optuna em `neural`/`neural_faixas`, 100 tentativas, perda cross-entropy vs MSE como hiperparâmetro)
+→ E4 (melhor configuração em 3 folds × 3 sementes). A busca leva ~15–40 min por variante em CPU e **retoma** se for interrompida (estudos em `models/optuna/`, fora do Git).
+Os CSV/JSON de `reports/tables/` são versionados.
