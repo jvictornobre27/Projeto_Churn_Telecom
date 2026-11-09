@@ -6,7 +6,7 @@
 * Leandro Luiz de Lima Freitas 
 * Tomás Nascimento Santos
 
-Previsão de churn com redes neurais e modelos de comparação. Etapas feitas: **EDA, particionamento em 3 folds, pré-processamento, métricas compartilhadas e MLP (PyTorch)**.
+Previsão de churn com redes neurais e modelos de comparação. Etapas feitas: **EDA, particionamento em 3 folds, pré-processamento, métricas compartilhadas, MLP (PyTorch), XGBoost e TabPFN v2**.
 
 ## Estrutura
 
@@ -23,14 +23,18 @@ Projeto_Churn_Telecom/
 │   ├── 02_particionamento_dados.ipynb    # 3 folds, oversampling, verificações, salvar
 │   ├── 03_eda_treino_fold1.ipynb         # EDA só no treino do Fold 1
 │   ├── 04_preprocessamento.ipynb         # imputação, faixas, one-hot, Min-Max (ajustados só no treino)
-│   └── 05_mlp.ipynb                      # MLP: escada de evolução E0→E4 (Optuna, 3 folds × 3 sementes)
+│   ├── 05_mlp.ipynb                      # MLP: escada de evolução E0→E4 (Optuna, 3 folds × 3 sementes)
+│   ├── 06_xgboost.ipynb                  # XGBoost: escada E0→E3 (Optuna, 3 folds × 3 sementes)
+│   └── 07_tabpfn.ipynb                   # TabPFN v2: escada E0→E4 (sem busca; varia a entrada)
 ├── src/
 │   ├── config.py       # caminhos, semente, colunas, rotação dos folds
 │   ├── data_loader.py  # leitura do CSV original
 │   ├── split_data.py   # particionamento, verificações, salvar/carregar
 │   ├── preprocess.py   # pré-processamento por fold sem vazamento, verificações
 │   ├── metrics.py      # KS, AUROC, MSE... e formato ÚNICO de resultados (todos os modelos)
-│   └── mlp.py          # motor do MLP: rede, treino, parada antecipada, Optuna
+│   ├── mlp.py          # motor do MLP: rede, treino, parada antecipada, Optuna
+│   ├── xgb.py          # motor do XGBoost: categóricas nativas, parada antecipada, Optuna
+│   └── tabpfn_model.py # motor do TabPFN v2: contexto, variantes de entrada, registro
 ├── reports/{figures,tables}/
 └── logs/
 ```
@@ -104,3 +108,16 @@ plot_evolution(load_results(), "xgboost", metric="ks", fold=1)
 Escada: E0 (rede pequena, todas as variáveis) → E1 (+faixas) → E2/E3 (busca Optuna em `neural`/`neural_faixas`, 100 tentativas, perda cross-entropy vs MSE como hiperparâmetro)
 → E4 (melhor configuração em 3 folds × 3 sementes). A busca leva ~15–40 min por variante em CPU e **retoma** se for interrompida (estudos em `models/optuna/`, fora do Git).
 Os CSV/JSON de `reports/tables/` são versionados.
+## XGBoost (`notebooks/06_xgboost.ipynb`)
+
+Escada: E0 (padrão da biblioteca, `arvore` com categóricas nativas) → E1 (Optuna em `arvore`) → E2 (Optuna em `neural`, one-hot)
+→ E3 (melhor entre E1/E2 pelo KS de validação, 3 folds × 3 sementes). Parada antecipada pela log-loss de validação (paciência 20).
+Roda em ~3 min em CPU.
+
+## TabPFN v2 (`notebooks/07_tabpfn.ipynb`)
+
+Transformer pré-treinado: o treino entra como contexto, sem gradiente e sem busca de hiperparâmetros. A escada varia a entrada:
+E0 (`neural`) → E1 (`arvore`, categóricas nativas) → E2 (contexto sem as cópias do oversampling) → E3 (32 membros no ensemble)
+→ E4 (melhor pelo KS de validação, 3 folds × 3 sementes).
+- A versão é fixada em **v2** (`ModelVersion.V2`). Os pesos do v2 baixam do HuggingFace sem token; as versões 2.5+ (padrão do pacote) exigem licença.
+- **Colab com GPU** (T4) recomendado. Em CPU funciona, mais devagar.

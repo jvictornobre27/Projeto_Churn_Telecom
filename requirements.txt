@@ -15,6 +15,11 @@ nbstripout
 torch>=2.1
 optuna>=3.5
 
+# Gradient Boosting
+xgboost>=2.0
+
+# TabPFN v2 (usa a versão V2 fixada em src/tabpfn_model.py; GPU recomendada)
+tabpfn>=6.0
+
 # Próximos modelos
-# xgboost
 # shap
