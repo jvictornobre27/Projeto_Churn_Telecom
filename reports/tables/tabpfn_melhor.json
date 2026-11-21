@@ -1,0 +1,7 @@
+{
+  "n_estimators": 32,
+  "sem_repeticao": true,
+  "softmax_temperature": 0.9,
+  "versao": "v2",
+  "variante": "neural"
+}
