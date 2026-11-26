@@ -6,7 +6,7 @@
 * Leandro Luiz de Lima Freitas 
 * Tomás Nascimento Santos
 
-Previsão de churn com redes neurais e modelos de comparação. Etapas feitas: **EDA, particionamento em 3 folds, pré-processamento, métricas compartilhadas, MLP (PyTorch), XGBoost, TabPFN v2 e KAN de referência**.
+Previsão de churn com redes neurais e modelos de comparação. Etapas feitas: **EDA, particionamento em 3 folds, pré-processamento, métricas compartilhadas, MLP (PyTorch), XGBoost, TabPFN v2, KAN de referência e ChebyshevKAN (TabKAN)**.
 
 ## Estrutura
 
@@ -26,7 +26,8 @@ Projeto_Churn_Telecom/
 │   ├── 05_mlp.ipynb                      # MLP: escada de evolução E0→E4 (Optuna, 3 folds × 3 sementes)
 │   ├── 06_xgboost.ipynb                  # XGBoost: escada E0→E3 (Optuna, 3 folds × 3 sementes)
 │   ├── 07_tabpfn.ipynb                   # TabPFN v2: escada E0→E4 (sem busca; varia a entrada)
-│   └── 08_kan.ipynb                      # KAN: referência E0 nos três folds
+│   ├── 08_kan.ipynb                      # KAN: referência E0 nos três folds
+│   └── 09_tabkan.ipynb                   # TabKAN: ChebyshevKAN de grau 3
 ├── src/
 │   ├── config.py       # caminhos, semente, colunas, rotação dos folds
 │   ├── data_loader.py  # leitura do CSV original
@@ -36,7 +37,8 @@ Projeto_Churn_Telecom/
 │   ├── mlp.py          # motor do MLP: rede, treino, parada antecipada, Optuna
 │   ├── xgb.py          # motor do XGBoost: categóricas nativas, parada antecipada, Optuna
 │   ├── tabpfn_model.py # motor do TabPFN v2: contexto, variantes de entrada, registro
-│   └── kan.py          # motor da KAN: splines lineares, treino e parada antecipada
+│   ├── kan.py          # motor da KAN: splines lineares, treino e parada antecipada
+│   └── tabkan.py       # camadas de Chebyshev em PyTorch
 ├── reports/{figures,tables}/
 └── logs/
 ```
@@ -131,3 +133,7 @@ A etapa `E0_baseline` usa a variante `neural`, uma camada oculta de 10 unidades 
 O notebook registra as curvas de aprendizagem e salva as métricas de treino e validação em `reports/tables/resultados_kan.csv`. O KS médio de validação foi 0,5195. A comparação com a MLP de referência usa o fold 1, que tem registro da mesma etapa, variante e semente. O teste fica reservado para a avaliação final.
 
 A etapa `E1_grade5` compara cinco intervalos com os três da referência. O KS médio de validação passou de 0.5195 para 0.5128. O ganho ocorreu em 1 dos três folds. No fold 1, a diferença E1 menos E0 foi -0.0087. Pelo critério definido, a grade de três intervalos fica como referência provisória. A comparação cobre uma semente.
+
+## TabKAN (`notebooks/09_tabkan.ipynb`)
+
+A E0 usa uma ChebyshevKAN local de grau 3 com o protocolo da KAN. O KS médio da ChebyshevKAN foi 0.5255, frente a 0.5195 da KAN. No fold 1, a diferença foi +0.0035. A ChebyshevKAN superou a referência em 2 dos três folds. Esta rodada cobre uma única semente. As métricas ficam em `reports/tables/resultados_tabkan.csv`.

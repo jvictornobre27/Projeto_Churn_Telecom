@@ -17,7 +17,13 @@ class CamadaKAN(nn.Module):
         return self.projecao(base.flatten(1))
 
 
-def ajustar(dados, config, semente):
+def criar_spline(entradas, config):
+    return nn.Sequential(CamadaKAN(entradas, config["largura"], 0, 1, config["intervalos"]),
+                           CamadaKAN(config["largura"], 1, -1, 1, config["intervalos"]),
+                           nn.Flatten(start_dim=0))
+
+
+def ajustar(dados, config, semente, criar_modelo=criar_spline):
     from copy import deepcopy
     from time import perf_counter
 
@@ -28,9 +34,7 @@ def ajustar(dados, config, semente):
         tensores[conjunto] = (torch.tensor(X.to_numpy(), dtype=torch.float32),
                               torch.tensor(y.to_numpy(), dtype=torch.float32).reshape(-1))
     x, y = tensores["treino"]
-    modelo = nn.Sequential(CamadaKAN(x.shape[1], config["largura"], 0, 1, config["intervalos"]),
-                           CamadaKAN(config["largura"], 1, -1, 1, config["intervalos"]),
-                           nn.Flatten(start_dim=0))
+    modelo = criar_modelo(x.shape[1], config)
     otimizador = torch.optim.Adam(modelo.parameters(), lr=config["lr"])
     perda = nn.BCEWithLogitsLoss()
     historico = []
