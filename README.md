@@ -145,3 +145,5 @@ A E1 do notebook 09 compara um ChebyshevKAN-Mixer local compacto com as duas ref
 A E2 preserva a segunda normalização e compara os logits antes e depois da ablação em `reports/figures/09_mixer_logits_e1_e2.png`. Retirar a primeira LayerNorm elevou o KS médio do Mixer de 0.1071 para 0.5166. A KAN obteve 0.5183 e a ChebyshevKAN 0.5264. A E2 superou a ChebyshevKAN em 2 dos nove pares. No fold 1, a diferença média E2 menos ChebyshevKAN foi -0.0064.
 
 Avaliação final em teste no notebook 09. No teste, o KS médio foi 0,5304 para a KAN e 0,5380 para a ChebyshevKAN. Priorizando 20% da carteira, as capturas médias foram 49.3% e 49.7%, respectivamente. As curvas estão em `reports/tables/09_ganhos_teste.csv`.
+
+A E3 do notebook 09 avalia o pooling ponderado no Mixer em treino e validação. O KS médio passou de 0,5166 na E2 para 0,5182 na E3. A E3 melhorou em 4 dos nove pares. No fold 1, a diferença média foi +0,0004. A ChebyshevKAN obteve 0,5264.
