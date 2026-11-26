@@ -29,10 +29,10 @@ def criar_chebyshev(entradas, config):
 class ChebyshevMixer(nn.Module):
     """Mixer compacto com um bloco residual nos eixos de atributos e canais."""
 
-    def __init__(self, entradas, canais, largura, grau):
+    def __init__(self, entradas, canais, largura, grau, normalizar_atributos=True):
         super().__init__()
         self.embedding = nn.Linear(1, canais)
-        self.norm_atributos = nn.LayerNorm(canais)
+        self.norm_atributos = nn.LayerNorm(canais) if normalizar_atributos else nn.Identity()
         self.norm_canais = nn.LayerNorm(canais)
         self.atributos = nn.Sequential(CamadaChebyshev(entradas, largura, grau),
                                        CamadaChebyshev(largura, entradas, grau))
@@ -53,4 +53,5 @@ class ChebyshevMixer(nn.Module):
 
 
 def criar_mixer(entradas, config):
-    return ChebyshevMixer(entradas, config["canais"], config["largura"], config["grau"])
+    return ChebyshevMixer(entradas, config["canais"], config["largura"], config["grau"],
+                         normalizar_atributos=config.get("normalizar_atributos", True))

@@ -141,3 +141,5 @@ A E0 usa uma ChebyshevKAN local de grau 3 com o protocolo da KAN. O KS médio da
 Nas sementes 42, 43 e 44, o KS médio foi 0.5183 para a KAN e 0.5264 para a ChebyshevKAN (diferença +0.0081). A ChebyshevKAN obteve KS maior em 7 pares, menor em 1 e empatou em 1, considerando a precisão numérica. O notebook 09 reúne a comparação pareada e o gráfico em `reports/figures/09_tabkan_delta_ks_sementes.png`.
 
 A E1 do notebook 09 compara um ChebyshevKAN-Mixer local compacto com as duas referências nos mesmos nove pares. O Mixer atingiu KS médio de 0.1071, frente a 0.5264 da ChebyshevKAN e 0.5183 da KAN. No fold 1, a diferença média Mixer menos ChebyshevKAN foi -0.3814. O Mixer superou a ChebyshevKAN em 0 dos nove pares. Tempos, parâmetros e KS estão em `reports/tables/09_mixer_comparacao.csv`.
+
+A E2 preserva a segunda normalização e compara os logits antes e depois da ablação em `reports/figures/09_mixer_logits_e1_e2.png`. Retirar a primeira LayerNorm elevou o KS médio do Mixer de 0.1071 para 0.5166. A KAN obteve 0.5183 e a ChebyshevKAN 0.5264. A E2 superou a ChebyshevKAN em 2 dos nove pares. No fold 1, a diferença média E2 menos ChebyshevKAN foi -0.0064.
