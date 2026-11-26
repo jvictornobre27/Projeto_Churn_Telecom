@@ -129,3 +129,5 @@ E0 (`neural`) → E1 (`arvore`, categóricas nativas) → E2 (contexto sem as c�
 A etapa `E0_baseline` usa a variante `neural`, uma camada oculta de 10 unidades e splines lineares com três intervalos. A configuração é fixa nos três folds, com semente 42. A parada antecipada seleciona a época pela perda de validação, com paciência de 15 épocas.
 
 O notebook registra as curvas de aprendizagem e salva as métricas de treino e validação em `reports/tables/resultados_kan.csv`. O KS médio de validação foi 0,5195. A comparação com a MLP de referência usa o fold 1, que tem registro da mesma etapa, variante e semente. O teste fica reservado para a avaliação final.
+
+A etapa `E1_grade5` compara cinco intervalos com os três da referência. O KS médio de validação passou de 0.5195 para 0.5128. O ganho ocorreu em 1 dos três folds. No fold 1, a diferença E1 menos E0 foi -0.0087. Pelo critério definido, a grade de três intervalos fica como referência provisória. A comparação cobre uma semente.
