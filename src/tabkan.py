@@ -29,7 +29,7 @@ def criar_chebyshev(entradas, config):
 class ChebyshevMixer(nn.Module):
     """Mixer compacto com um bloco residual nos eixos de atributos e canais."""
 
-    def __init__(self, entradas, canais, largura, grau, normalizar_atributos=True):
+    def __init__(self, entradas, canais, largura, grau, normalizar_atributos=True, pooling_ponderado=False):
         super().__init__()
         self.embedding = nn.Linear(1, canais)
         self.norm_atributos = nn.LayerNorm(canais) if normalizar_atributos else nn.Identity()
@@ -39,6 +39,8 @@ class ChebyshevMixer(nn.Module):
         self.canais = nn.Sequential(CamadaChebyshev(canais, largura, grau),
                                     CamadaChebyshev(largura, canais, grau))
         self.saida = nn.Linear(canais, 1)
+        # Logits nulos dão o mesmo peso inicial a cada posição.
+        self.logits_pooling = nn.Parameter(torch.zeros(entradas)) if pooling_ponderado else None
 
     def forward(self, x):
         h = self.embedding(x.unsqueeze(-1))
@@ -49,9 +51,15 @@ class ChebyshevMixer(nn.Module):
         # Cada atributo combina seus canais antes da média por cliente.
         z = self.norm_canais(h).reshape(-1, canais)
         h = h + self.canais(z).reshape(lote, atributos, canais)
-        return self.saida(h.mean(dim=1)).squeeze(-1)
+        if self.logits_pooling is None:
+            resumo = h.mean(dim=1)
+        else:
+            pesos = self.logits_pooling.softmax(dim=0)
+            resumo = (h * pesos[None, :, None]).sum(dim=1)
+        return self.saida(resumo).squeeze(-1)
 
 
 def criar_mixer(entradas, config):
     return ChebyshevMixer(entradas, config["canais"], config["largura"], config["grau"],
-                         normalizar_atributos=config.get("normalizar_atributos", True))
+                         normalizar_atributos=config.get("normalizar_atributos", True),
+                         pooling_ponderado=config.get("pooling_ponderado", False))

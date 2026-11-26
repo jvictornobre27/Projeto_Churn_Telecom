@@ -143,3 +143,9 @@ Nas sementes 42, 43 e 44, o KS médio foi 0.5183 para a KAN e 0.5264 para a Cheb
 A E1 do notebook 09 compara um ChebyshevKAN-Mixer local compacto com as duas referências nos mesmos nove pares. O Mixer atingiu KS médio de 0.1071, frente a 0.5264 da ChebyshevKAN e 0.5183 da KAN. No fold 1, a diferença média Mixer menos ChebyshevKAN foi -0.3814. O Mixer superou a ChebyshevKAN em 0 dos nove pares. Tempos, parâmetros e KS estão em `reports/tables/09_mixer_comparacao.csv`.
 
 A E2 preserva a segunda normalização e compara os logits antes e depois da ablação em `reports/figures/09_mixer_logits_e1_e2.png`. Retirar a primeira LayerNorm elevou o KS médio do Mixer de 0.1071 para 0.5166. A KAN obteve 0.5183 e a ChebyshevKAN 0.5264. A E2 superou a ChebyshevKAN em 2 dos nove pares. No fold 1, a diferença média E2 menos ChebyshevKAN foi -0.0064.
+
+Avaliação final em teste no notebook 09. No teste, o KS médio foi 0,5304 para a KAN e 0,5380 para a ChebyshevKAN. Priorizando 20% da carteira, as capturas médias foram 49.3% e 49.7%, respectivamente. As curvas estão em `reports/tables/09_ganhos_teste.csv`.
+
+A E3 do notebook 09 avalia o pooling ponderado no Mixer em treino e validação. O KS médio passou de 0,5166 na E2 para 0,5182 na E3. A E3 melhorou em 4 dos nove pares. No fold 1, a diferença média foi +0,0004. A ChebyshevKAN obteve 0,5264.
+
+A E4 do notebook 09 ajusta a ChebyshevKAN com 100 tentativas Optuna no fold 1 e reavalia as cinco finalistas com três sementes. A finalista selecionada usa largura 6, grau 5, taxa 0.000548165 e lote 32. A diferença média de KS em relação à E0 foi +0.0087 no fold de busca e -0.0062 nos nove pares. Os resultados são de validação.

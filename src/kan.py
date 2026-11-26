@@ -23,7 +23,7 @@ def criar_spline(entradas, config):
                            nn.Flatten(start_dim=0))
 
 
-def ajustar(dados, config, semente, criar_modelo=criar_spline):
+def ajustar(dados, config, semente, criar_modelo=criar_spline, *, x_teste=None):
     from copy import deepcopy
     from time import perf_counter
 
@@ -59,4 +59,8 @@ def ajustar(dados, config, semente, criar_modelo=criar_spline):
     modelo.load_state_dict(pesos)
     with torch.no_grad():
         scores = {nome: (b.numpy(), modelo(a).sigmoid().numpy()) for nome, (a, b) in tensores.items()}
+        # O teste é pontuado somente após restaurar o checkpoint de validação.
+        if x_teste is not None:
+            entrada = torch.tensor(x_teste.to_numpy(), dtype=torch.float32)
+            scores["prob_teste"] = modelo(entrada).sigmoid().numpy()
     return scores, historico, melhor_epoca, perf_counter() - inicio
