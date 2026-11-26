@@ -137,3 +137,5 @@ A etapa `E1_grade5` compara cinco intervalos com os três da referência. O KS m
 ## TabKAN (`notebooks/09_tabkan.ipynb`)
 
 A E0 usa uma ChebyshevKAN local de grau 3 com o protocolo da KAN. O KS médio da ChebyshevKAN foi 0.5255, frente a 0.5195 da KAN. No fold 1, a diferença foi +0.0035. A ChebyshevKAN superou a referência em 2 dos três folds. Esta rodada cobre uma única semente. As métricas ficam em `reports/tables/resultados_tabkan.csv`.
+
+Nas sementes 42, 43 e 44, o KS médio foi 0.5183 para a KAN e 0.5264 para a ChebyshevKAN (diferença +0.0081). A ChebyshevKAN obteve KS maior em 7 pares, menor em 1 e empatou em 1, considerando a precisão numérica. O notebook 09 reúne a comparação pareada e o gráfico em `reports/figures/09_tabkan_delta_ks_sementes.png`.
