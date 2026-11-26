@@ -6,7 +6,7 @@
 * Leandro Luiz de Lima Freitas 
 * Tomás Nascimento Santos
 
-Previsão de churn com redes neurais e modelos de comparação. Etapas feitas: **EDA, particionamento em 3 folds, pré-processamento, métricas compartilhadas, MLP (PyTorch), XGBoost e TabPFN v2**.
+Previsão de churn com redes neurais e modelos de comparação. Etapas feitas: **EDA, particionamento em 3 folds, pré-processamento, métricas compartilhadas, MLP (PyTorch), XGBoost, TabPFN v2 e KAN de referência**.
 
 ## Estrutura
 
@@ -25,7 +25,8 @@ Projeto_Churn_Telecom/
 │   ├── 04_preprocessamento.ipynb         # imputação, faixas, one-hot, Min-Max (ajustados só no treino)
 │   ├── 05_mlp.ipynb                      # MLP: escada de evolução E0→E4 (Optuna, 3 folds × 3 sementes)
 │   ├── 06_xgboost.ipynb                  # XGBoost: escada E0→E3 (Optuna, 3 folds × 3 sementes)
-│   └── 07_tabpfn.ipynb                   # TabPFN v2: escada E0→E4 (sem busca; varia a entrada)
+│   ├── 07_tabpfn.ipynb                   # TabPFN v2: escada E0→E4 (sem busca; varia a entrada)
+│   └── 08_kan.ipynb                      # KAN: referência E0 nos três folds
 ├── src/
 │   ├── config.py       # caminhos, semente, colunas, rotação dos folds
 │   ├── data_loader.py  # leitura do CSV original
@@ -34,7 +35,8 @@ Projeto_Churn_Telecom/
 │   ├── metrics.py      # KS, AUROC, MSE... e formato ÚNICO de resultados (todos os modelos)
 │   ├── mlp.py          # motor do MLP: rede, treino, parada antecipada, Optuna
 │   ├── xgb.py          # motor do XGBoost: categóricas nativas, parada antecipada, Optuna
-│   └── tabpfn_model.py # motor do TabPFN v2: contexto, variantes de entrada, registro
+│   ├── tabpfn_model.py # motor do TabPFN v2: contexto, variantes de entrada, registro
+│   └── kan.py          # motor da KAN: splines lineares, treino e parada antecipada
 ├── reports/{figures,tables}/
 └── logs/
 ```
@@ -121,3 +123,9 @@ E0 (`neural`) → E1 (`arvore`, categóricas nativas) → E2 (contexto sem as c�
 → E4 (melhor pelo KS de validação, 3 folds × 3 sementes).
 - A versão é fixada em **v2** (`ModelVersion.V2`). Os pesos do v2 baixam do HuggingFace sem token; as versões 2.5+ (padrão do pacote) exigem licença.
 - **Colab com GPU** (T4) recomendado. Em CPU funciona, mais devagar.
+
+## KAN (`notebooks/08_kan.ipynb`)
+
+A etapa `E0_baseline` usa a variante `neural`, uma camada oculta de 10 unidades e splines lineares com três intervalos. A configuração é fixa nos três folds, com semente 42. A parada antecipada seleciona a época pela perda de validação, com paciência de 15 épocas.
+
+O notebook registra as curvas de aprendizagem e salva as métricas de treino e validação em `reports/tables/resultados_kan.csv`. O KS médio de validação foi 0,5195. A comparação com a MLP de referência usa o fold 1, que tem registro da mesma etapa, variante e semente. O teste fica reservado para a avaliação final.
