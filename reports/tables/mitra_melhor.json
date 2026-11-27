@@ -1,0 +1,6 @@
+{
+  "hf_model": "autogluon/mitra-classifier",
+  "fine_tune": false,
+  "sem_repeticao": true,
+  "variante": "arvore"
+}
